@@ -190,9 +190,18 @@ public class GroundItemsOverlay extends Overlay
 
 						ItemPrice itemPrice = itemManager.getItemPriceAsync(itemId);
 
-						int gePrice = itemPrice == null ? 0 : itemPrice.getPrice() * quantity;
-						int alchPrice = Math.round(itemDefinition.getPrice() * HIGH_ALCHEMY_CONSTANT) * quantity;
+						int gePrice, alchPrice;
 
+						if (itemId == 995)
+						{
+							gePrice = 1 * quantity;
+							alchPrice = 1 * quantity;
+						}
+						else
+						{
+							gePrice = itemPrice == null ? 0 : itemPrice.getPrice() * quantity;
+							alchPrice = Math.round(itemDefinition.getPrice() * HIGH_ALCHEMY_CONSTANT) * quantity;
+						}
 						if (gePrice == 0 || ((gePrice >= config.getHideUnderGeValue()) &&
 								(alchPrice >= config.getHideUnderHAValue())))
 						{
