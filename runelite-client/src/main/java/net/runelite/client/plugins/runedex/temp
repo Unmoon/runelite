@@ -1,0 +1,54 @@
+2019-06-11 22:50:48 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Last NPC: Goblin
+2019-06-11 22:50:48 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Goblin
+2019-06-11 22:50:48 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Stats</col><br>Combat level: 2<br>Hitpoints: 5<br>Attack: 1<br>Defence: 1<br>Strength: 1<br>Magic: 1<br>Ranged: 1<br>Max standard hit: 1<br>Main attack style: Crush
+2019-06-11 22:50:48 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Aggressive Stats</col><br>Attack speed: 4<br>Attack bonus: -21<br>Strength bonus: -15<br>
+2019-06-11 22:50:48 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Defensive Stats</col><br>Stab: -15<br>Slash: -15<br>Crush: -15<br>Magic: -15<br>Ranged: -15
+2019-06-11 22:50:48 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Other Attributes</col><br>- Is a slayer monster.<br>- Can be poisoned.<br>- Not immune to cannons.
+
+
+2019-06-11 22:52:06 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Last NPC: Giant spider
+2019-06-11 22:52:06 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Giant spider
+2019-06-11 22:52:06 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Stats</col><br>Combat level: 2<br>Hitpoints: 5<br>Attack: 1<br>Defence: 1<br>Strength: 1<br>Magic: 1<br>Ranged: 1<br>Max standard hit: 1<br>Main attack style: Stab
+2019-06-11 22:52:06 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Aggressive Stats</col><br>Attack speed: 4<br>Attack bonus: -10<br>Strength bonus: -10<br>
+2019-06-11 22:52:06 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Defensive Stats</col><br>Stab: -10<br>Slash: -10<br>Crush: -10<br>Magic: -10<br>Ranged: -10
+2019-06-11 22:52:06 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Other Attributes</col><br>- Is a slayer monster.<br>- Can be poisoned.<br>- Not immune to cannons.
+
+
+2019-06-11 22:52:18 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Last NPC: Duck
+2019-06-11 22:52:18 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Duck
+2019-06-11 22:52:18 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Stats</col><br>Combat level: 1<br>Hitpoints: 3<br>Attack: 1<br>Defence: 1<br>Strength: 1<br>Magic: 1<br>Ranged: 1<br>Max standard hit: 0<br>Main attack style: Stab
+2019-06-11 22:52:18 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Aggressive Stats</col><br>Attack speed: 4<br>Attack bonus: -47<br>Strength bonus: -42<br>
+2019-06-11 22:52:18 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Defensive Stats</col><br>Stab: -42<br>Slash: -42<br>Crush: -42<br>Magic: -42<br>Ranged: -42
+2019-06-11 22:52:18 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Other Attributes</col><br>- Is a slayer monster.<br>- Can be poisoned.<br>- Not immune to cannons.
+
+
+2019-06-11 22:52:37 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Last NPC: Cow
+2019-06-11 22:52:37 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Cow
+2019-06-11 22:52:37 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Stats</col><br>Combat level: 2<br>Hitpoints: 8<br>Attack: 1<br>Defence: 1<br>Strength: 1<br>Magic: 1<br>Ranged: 1<br>Max standard hit: 1<br>Main attack style: Crush
+2019-06-11 22:52:37 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Aggressive Stats</col><br>Attack speed: 4<br>Attack bonus: -15<br>Strength bonus: -15<br>
+2019-06-11 22:52:37 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Defensive Stats</col><br>Stab: -21<br>Slash: -21<br>Crush: -21<br>Magic: -21<br>Ranged: -21
+2019-06-11 22:52:37 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Other Attributes</col><br>- Is a slayer monster.<br>- Immune to poison.<br>- Not immune to cannons.
+
+
+2019-06-11 22:53:01 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Last NPC: Suqah
+2019-06-11 22:53:01 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Suqah
+2019-06-11 22:53:01 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Stats</col><br>Combat level: 111<br>Hitpoints: 105<br>Attack: 95<br>Defence: 95<br>Strength: 95<br>Magic: 1<br>Ranged: 1<br>Max standard hit: 10<br>Main attack style: Stab
+2019-06-11 22:53:01 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Aggressive Stats</col><br>Attack speed: 6<br>
+2019-06-11 22:53:01 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Defensive Stats</col><br>Stab: 50<br>Slash: 70<br>Crush: 70<br>Magic: 90<br>Ranged: 50
+2019-06-11 22:53:01 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Other Attributes</col><br>- Is a slayer monster.<br>- Can be poisoned.<br>- Not immune to cannons.
+
+
+2019-06-11 22:53:55 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Last NPC: Market Guard
+2019-06-11 22:53:55 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Market Guard
+2019-06-11 22:53:55 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Stats</col><br>Combat level: 48<br>Hitpoints: 50<br>Attack: 40<br>Defence: 40<br>Strength: 40<br>Magic: 1<br>Ranged: 1<br>Max standard hit: 8<br>Main attack style: Crush
+2019-06-11 22:53:55 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Aggressive Stats</col><br>Attack speed: 3<br>Attack bonus: 40<br>Strength bonus: 40<br>
+2019-06-11 22:53:55 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Defensive Stats</col><br>Stab: 50<br>Slash: 50<br>Crush: 50<br>Magic: 50<br>Ranged: 50
+2019-06-11 22:53:55 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Other Attributes</col><br>- Is not a slayer monster.<br>- Can be poisoned.<br>- Not immune to cannons.
+
+
+2019-06-11 22:54:39 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Last NPC: Vorkath
+2019-06-11 22:54:39 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - Vorkath
+2019-06-11 22:54:39 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Stats</col><br>Combat level: 732<br>Hitpoints: 750<br>Attack: 560<br>Defence: 214<br>Strength: 308<br>Magic: 150<br>Ranged: 308<br>Max standard hit: 32<br>Main attack style: Slash
+2019-06-11 22:54:39 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Aggressive Stats</col><br>Attack speed: 5<br>Attack bonus: 16<br>Ranged bonus: 78<br>Magic bonus: 150<br>Magic str bonus: 56
+2019-06-11 22:54:39 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Defensive Stats</col><br>Stab: 26<br>Slash: 108<br>Crush: 108<br>Magic: 240<br>Ranged: 26
+2019-06-11 22:54:39 [Client] DEBUG n.r.c.plugins.runedex.RuneDexPlugin - <col=ffb000>Other Attributes</col><br>- Is a slayer monster.<br>- Is a slayer boss monster.<br>- Immune to poison.<br>- Immune to cannons.<br>- Vulnerable to dragonbane.

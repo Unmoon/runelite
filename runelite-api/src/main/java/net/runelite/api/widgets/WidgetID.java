@@ -911,4 +911,13 @@ public class WidgetID
 	{
 		static final int CONTAINER = 2;
 	}
+
+	static class MonsterExamine
+	{
+		static final int NAME = 3;
+		static final int STATS = 20;
+		static final int AGGRESSIVE_STATS = 22;
+		static final int DEFENSIVE_STATS = 24;
+		static final int OTHER_ATTRIBUTES = 26;
+	}
 }
