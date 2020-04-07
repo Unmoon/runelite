@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Unmoon <https://github.com/Unmoon>
+ * Copyright (c) 2020, Unmoon <https://github.com/Unmoon>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,15 +24,19 @@
  */
 package net.runelite.client.plugins.runedex;
 
-import com.google.gson.Gson;
+import java.awt.image.BufferedImage;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import static net.runelite.api.Constants.CLIENT_TICK_LENGTH;
+import net.runelite.api.GameState;
 import static net.runelite.api.MenuAction.SPELL_CAST_ON_NPC;
 import net.runelite.api.NPC;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.WidgetLoaded;
 import static net.runelite.api.widgets.WidgetID.MONSTER_EXAMINE_GROUP_ID;
@@ -41,6 +45,10 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.task.Schedule;
+import net.runelite.client.ui.ClientToolbar;
+import net.runelite.client.ui.NavigationButton;
+import net.runelite.client.util.ImageUtil;
 
 
 @Slf4j
@@ -50,7 +58,8 @@ import net.runelite.client.plugins.PluginDescriptor;
 )
 public class RuneDexPlugin extends Plugin
 {
-	private static final Gson GSON = new Gson();
+	@Inject
+	private ClientToolbar clientToolbar;
 
 	@Inject
 	private Client client;
@@ -58,16 +67,64 @@ public class RuneDexPlugin extends Plugin
 	@Inject
 	private ClientThread clientThread;
 
-	private NPC last_npc;
+	private RuneDexPanel panel;
+	private NavigationButton navButton;
 
-	private Set<RuneMon> runedex = new HashSet<>();
+	private RuneDexClient runeDexClient = new RuneDexClient();
+
+	private NPC lastNpc;
+
+	Set<RuneMon> runeDex = new HashSet<>();
+
+	private String authenticationHash;
+
+	@Override
+	protected void startUp() throws Exception
+	{
+		panel = new RuneDexPanel(this);
+
+		final BufferedImage icon = ImageUtil.getResourceStreamFromClass(getClass(), "icon.png");
+
+		navButton = NavigationButton.builder()
+			.tooltip("Runedex")
+			.priority(6)
+			.icon(icon)
+			.panel(panel)
+			.build();
+		clientToolbar.addNavigation(navButton);
+	}
+
+	@Override
+	protected void shutDown()
+	{
+		clientToolbar.removeNavigation(navButton);
+	}
+
+	@Subscribe
+	public void onGameStateChanged(GameStateChanged gameStateChanged)
+	{
+		if (gameStateChanged.getGameState() == GameState.LOGGED_IN
+			&& (authenticationHash == null || !authenticationHash.equals(client.getUsername())))
+		{
+			// TODO: Hash this or use real auth
+			authenticationHash = client.getUsername();
+			runeDex = runeDexClient.fetch(authenticationHash);
+			SwingUtilities.invokeLater(() ->
+			{
+				for (RuneMon r : runeDex)
+				{
+					panel.add(r);
+				}
+			});
+		}
+	}
 
 	@Subscribe
 	private void onMenuOptionClicked(MenuOptionClicked event)
 	{
 		if (event.getMenuAction() == SPELL_CAST_ON_NPC)
 		{
-			last_npc = client.getCachedNPCs()[event.getId()];
+			lastNpc = client.getCachedNPCs()[event.getId()];
 		}
 	}
 
@@ -81,31 +138,44 @@ public class RuneDexPlugin extends Plugin
 				Thread.sleep(CLIENT_TICK_LENGTH);
 				clientThread.invokeLater(() ->
 				{
-					if (getRuneMonById(last_npc.getId()) != null)
+					int lastNpcId = lastNpc.getId();
+					String lastNpcName = lastNpc.getName();
+					String monsterExamineName = client.getWidget(WidgetInfo.MONSTER_EXAMINE_NAME).getText();
+
+					if (lastNpcName == null || !lastNpcName.equals(monsterExamineName))
 					{
-						log.debug("RuneMon already in collection: {}", last_npc.getName());
+						log.warn("Last NPC name does not match Monster Examine name, bailing out!");
 						return;
 					}
 
-					RuneMon runemon = new RuneMon(
-						last_npc,
-						client.getWidget(WidgetInfo.MONSTER_EXAMINE_NAME).getText(),
+					RuneMon runeMon = new RuneMon(
+						lastNpcId,
+						monsterExamineName,
 						client.getWidget(WidgetInfo.MONSTER_EXAMINE_STATS).getText(),
 						client.getWidget(WidgetInfo.MONSTER_EXAMINE_AGGRESSIVE_STATS).getText(),
 						client.getWidget(WidgetInfo.MONSTER_EXAMINE_DEFENSIVE_STATS).getText(),
 						client.getWidget(WidgetInfo.MONSTER_EXAMINE_OTHER_ATTRIBUTES).getText()
 						);
 
-					//log.debug("{}", GSON.toJson(runemon));
-					runedex.add(runemon);
-					log.debug("RuneMon added to collection: {}", runemon.getName());
-					log.debug("RuneDex has the following RuneMon:");
-					for (RuneMon i : runedex)
+					RuneMon oldRuneMon = getRuneMonById(lastNpcId);
+					if (oldRuneMon != null)
 					{
-						log.debug(i.getName());
+						if (oldRuneMon.equals(runeMon))
+						{
+							log.debug("RuneMon already in collection: {}", runeMon.getName());
+							return;
+						}
+						runeDex.remove(oldRuneMon);
 					}
-				});
 
+					runeDex.add(runeMon);
+					log.debug("RuneMon added to collection: {}", runeMon.getName());
+
+					SwingUtilities.invokeLater(() ->
+					{
+						panel.add(runeMon);
+					});
+				});
 			}
 			catch (InterruptedException err)
 			{
@@ -114,9 +184,18 @@ public class RuneDexPlugin extends Plugin
 		}
 	}
 
+	@Schedule(
+		period = 10,
+		unit = ChronoUnit.SECONDS,
+		asynchronous = true
+	)
+	public void submit() {
+		runeDexClient.submit(runeDex, authenticationHash);
+	}
+
 	private RuneMon getRuneMonById(int id)
 	{
-		for (RuneMon i : runedex)
+		for (RuneMon i : runeDex)
 		{
 			if (i.getId() == id) {
 				return i;

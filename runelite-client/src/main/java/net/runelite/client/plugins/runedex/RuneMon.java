@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Unmoon <https://github.com/Unmoon>
+ * Copyright (c) 2020, Unmoon <https://github.com/Unmoon>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.NPC;
 
 
 @Slf4j
@@ -137,26 +136,18 @@ public class RuneMon
 	private int vampyreTier;
 
 	RuneMon(
-		NPC npc,
-		String monster_examine_name,
-		String monster_examine_stats,
-		String monster_examine_aggressive_stats,
-		String monster_examine_defensive_stats,
-		String monster_examine_other_attributes
+		int id,
+		String monsterExamineName,
+		String monsterExamineStats,
+		String monsterExamineAggressiveStats,
+		String monsterExamineDefensiveStats,
+		String monsterExamineOtherAttributes
 	)
 	{
-		if (npc.getName() != null && npc.getName().equals(monster_examine_name))
-		{
-			this.id = npc.getId();
-		}
-		else
-		{
-			log.warn("Last NPC name does not match Monster Examine name, skipping ID info!");
-			this.id = 0;
-		}
-		this.name = monster_examine_name;
+		this.id = id;
+		this.name = monsterExamineName;
 
-		Matcher matcher = MONSTER_EXAMINE_PATTERN.matcher(monster_examine_stats);
+		Matcher matcher = MONSTER_EXAMINE_PATTERN.matcher(monsterExamineStats);
 		while (matcher.find()) {
 			String key = matcher.group(1);
 			String value = matcher.group(2);
@@ -194,7 +185,7 @@ public class RuneMon
 			}
 		}
 
-		matcher = MONSTER_EXAMINE_PATTERN.matcher(monster_examine_aggressive_stats);
+		matcher = MONSTER_EXAMINE_PATTERN.matcher(monsterExamineAggressiveStats);
 		while (matcher.find()) {
 			String key = matcher.group(1);
 			String value = matcher.group(2);
@@ -235,7 +226,7 @@ public class RuneMon
 			}
 		}
 
-		matcher = MONSTER_EXAMINE_PATTERN.matcher(monster_examine_defensive_stats);
+		matcher = MONSTER_EXAMINE_PATTERN.matcher(monsterExamineDefensiveStats);
 		while (matcher.find()) {
 			String key = matcher.group(1);
 			String value = matcher.group(2);
@@ -261,7 +252,7 @@ public class RuneMon
 			}
 		}
 
-		matcher = OTHER_ATTRIBUTES_PATTERN.matcher(monster_examine_other_attributes);
+		matcher = OTHER_ATTRIBUTES_PATTERN.matcher(monsterExamineOtherAttributes);
 		while (matcher.find()) {
 			String key = matcher.group(1);
 
@@ -306,5 +297,42 @@ public class RuneMon
 					log.warn("Unknown MONSTER_EXAMINE_OTHER_ATTRIBUTES key '{}'", key);
 			}
 		}
+	}
+
+	boolean equals(RuneMon c)
+	{
+		return c.getName().equals(this.getName()) &&
+			c.getId() == this.getId() &&
+			c.getCombatLevel() == this.getCombatLevel() &&
+			c.getHitpointsLevel() == this.getHitpointsLevel() &&
+			c.getAttackLevel() == this.getAttackLevel() &&
+			c.getDefenceLevel() == this.getDefenceLevel() &&
+			c.getStrengthLevel() == this.getStrengthLevel() &&
+			c.getMagicLevel() == this.getMagicLevel() &&
+			c.getRangedLevel() == this.getRangedLevel() &&
+			c.getMaxHit() == this.getMaxHit() &&
+			c.getAttackStyle().equals(this.getAttackStyle()) &&
+			c.getAttackSpeed() == this.getAttackSpeed() &&
+			c.getAttackBonus() == this.getAttackBonus() &&
+			c.getStabBonus() == this.getStabBonus() &&
+			c.getSlashBonus() == this.getSlashBonus() &&
+			c.getCrushBonus() == this.getCrushBonus() &&
+			c.getMagicBonus() == this.getMagicBonus() &&
+			c.getRangedBonus() == this.getRangedBonus() &&
+			c.getStrengthBonus() == this.getStrengthBonus() &&
+			c.getRangedStrengthBonus() == this.getRangedStrengthBonus() &&
+			c.getMagicStrengthBonus() == this.getMagicStrengthBonus() &&
+			c.getStabDefence() == this.getStabDefence() &&
+			c.getSlashDefence() == this.getSlashDefence() &&
+			c.getCrushDefence() == this.getCrushDefence() &&
+			c.getMagicDefence() == this.getMagicDefence() &&
+			c.getRangedDefence() == this.getRangedDefence() &&
+			c.isSlayerTask() == this.isSlayerTask() &&
+			c.isSlayerBossTask() == this.isSlayerBossTask() &&
+			c.isPoisonImmune() == this.isPoisonImmune() &&
+			c.isCannonImmune() == this.isCannonImmune() &&
+			c.isDemonbaneVulnerable() == this.isDemonbaneVulnerable() &&
+			c.isDragonbaneVulnerable() == this.isDragonbaneVulnerable() &&
+			c.getVampyreTier() == this.getVampyreTier();
 	}
 }
