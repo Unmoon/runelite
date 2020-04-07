@@ -29,6 +29,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -137,15 +139,11 @@ class RuneDexPanel extends PluginPanel
 	{
 		SwingUtil.fastRemoveAll(logsContainer);
 		boxes.clear();
+		sessionRecords.sort((c1, c2) -> c2.getId() - c1.getId());
 
-		int start = 0;
-		if (sessionRecords.size() > MAX_LOOT_BOXES)
+		for (RuneMon r : sessionRecords)
 		{
-			start = sessionRecords.size() - MAX_LOOT_BOXES;
-		}
-		for (int i = start; i < sessionRecords.size(); i++)
-		{
-			buildBox(sessionRecords.get(i));
+			buildBox(r);
 		}
 
 		boxes.forEach(RuneMonBox::rebuild);

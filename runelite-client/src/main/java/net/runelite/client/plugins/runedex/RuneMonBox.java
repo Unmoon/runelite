@@ -78,16 +78,15 @@ class RuneMonBox extends JPanel
 		titleLabel.setForeground(Color.WHITE);
 		// Set a size to make BoxLayout truncate the name
 		titleLabel.setMinimumSize(new Dimension(1, titleLabel.getPreferredSize().height));
-		logTitle.add(titleLabel);
 
 		subTitleLabel.setFont(FontManager.getRunescapeSmallFont());
 		subTitleLabel.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
-
-		subTitleLabel.setText("Level " + runeMon.getCombatLevel());
+		subTitleLabel.setText(Integer.toString(runeMon.getId()));
 
 		logTitle.add(Box.createRigidArea(new Dimension(TITLE_PADDING, 0)));
-		logTitle.add(Box.createHorizontalGlue());
 		logTitle.add(subTitleLabel);
+		logTitle.add(Box.createHorizontalGlue());
+		logTitle.add(titleLabel);
 		logTitle.add(Box.createRigidArea(new Dimension(TITLE_PADDING, 0)));
 
 		add(logTitle, BorderLayout.NORTH);
