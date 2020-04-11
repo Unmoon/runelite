@@ -27,10 +27,10 @@ package net.runelite.client.plugins.runedex;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -170,6 +170,27 @@ class RuneDexPanel extends PluginPanel
 		final JPopupMenu popupMenu = new JPopupMenu();
 		popupMenu.setBorder(new EmptyBorder(5, 5, 5, 5));
 		box.setComponentPopupMenu(popupMenu);
+
+		// Create collapse event
+		box.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				if (e.getButton() == MouseEvent.BUTTON1)
+				{
+					if (box.isCollapsed())
+					{
+						box.expand();
+					}
+					else
+					{
+						box.collapse();
+					}
+					//updateCollapseText();
+				}
+			}
+		});
 
 		// Add box to panel
 		boxes.add(box);

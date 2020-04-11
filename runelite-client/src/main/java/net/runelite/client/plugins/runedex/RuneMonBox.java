@@ -24,7 +24,6 @@
  */
 package net.runelite.client.plugins.runedex;
 
-import com.google.common.base.Strings;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -36,18 +35,15 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
-import net.runelite.client.util.Text;
 
 class RuneMonBox extends JPanel
 {
-	private static final int ITEMS_PER_ROW = 5;
 	private static final int TITLE_PADDING = 5;
 
 	private final JPanel itemContainer = new JPanel();
@@ -89,7 +85,10 @@ class RuneMonBox extends JPanel
 		logTitle.add(titleLabel);
 		logTitle.add(Box.createRigidArea(new Dimension(TITLE_PADDING, 0)));
 
+		itemContainer.setVisible(false);
+
 		add(logTitle, BorderLayout.NORTH);
+		add(itemContainer, BorderLayout.CENTER);
 	}
 
 	/**
@@ -162,55 +161,69 @@ class RuneMonBox extends JPanel
 	 */
 	private void buildItems()
 	{
-		return;
-//		List<RuneMon> items = this.items;
-//
-//		boolean isHidden = items.isEmpty();
-//		setVisible(!isHidden);
-//
-//		if (isHidden)
-//		{
-//			return;
-//		}
-//
-//		// Calculates how many rows need to be display to fit all items
-//		final int rowSize = ((items.size() % ITEMS_PER_ROW == 0) ? 0 : 1) + items.size() / ITEMS_PER_ROW;
-//
-//		itemContainer.removeAll();
-//		itemContainer.setLayout(new GridLayout(rowSize, ITEMS_PER_ROW, 1, 1));
-//
-//		for (int i = 0; i < rowSize * ITEMS_PER_ROW; i++)
-//		{
-//			final JPanel slotContainer = new JPanel();
-//			slotContainer.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-//
-//			if (i < items.size())
-//			{
-//				final RuneMon item = items.get(i);
-//				final JLabel imageLabel = new JLabel();
-//				imageLabel.setToolTipText(buildToolTip(item));
-//				imageLabel.setVerticalAlignment(SwingConstants.CENTER);
-//				imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-//
-//				//AsyncBufferedImage itemImage = itemManager.getImage(item.getId(), item.getQuantity(), item.getQuantity() > 1);
-//				//itemImage.addTo(imageLabel);
-//
-//				slotContainer.add(imageLabel);
-//
-//				// Create popup menu
-//				final JPopupMenu popupMenu = new JPopupMenu();
-//				popupMenu.setBorder(new EmptyBorder(5, 5, 5, 5));
-//				slotContainer.setComponentPopupMenu(popupMenu);
-//			}
-//
-//			itemContainer.add(slotContainer);
-//		}
-//
-//		itemContainer.repaint();
-	}
+		itemContainer.removeAll();
+		itemContainer.setLayout(new GridLayout(3, 1, 1, 1));
 
-	private static String buildToolTip(RuneMon item)
-	{
-		return item.getName();
+		JPanel slotContainer = new JPanel();
+		slotContainer.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		final JLabel statsLabel = new JLabel();
+		statsLabel.setToolTipText(runeMon.getName());
+		statsLabel.setVerticalAlignment(SwingConstants.CENTER);
+		statsLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		statsLabel.setText(
+			runeMon.getCombatLevel() + "   "
+				+ runeMon.getHitpointsLevel() + "   "
+				+ runeMon.getAttackLevel() + "   "
+				+ runeMon.getDefenceLevel() + "   "
+				+ runeMon.getStrengthLevel() + "   "
+				+ runeMon.getMagicLevel() + "   "
+				+ runeMon.getRangedLevel() + "   "
+				+ runeMon.getMaxHit() + "   "
+				+ runeMon.getAttackStyle() + "   "
+		);
+		slotContainer.add(statsLabel);
+		itemContainer.add(slotContainer);
+
+		slotContainer = new JPanel();
+		slotContainer.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		final JLabel aggressiveStatsLabel = new JLabel();
+		aggressiveStatsLabel.setToolTipText(runeMon.getName());
+		aggressiveStatsLabel.setVerticalAlignment(SwingConstants.CENTER);
+		aggressiveStatsLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		aggressiveStatsLabel.setText(
+			runeMon.getAttackSpeed() + "   "
+				+ runeMon.getAttackBonus() + "   "
+				+ runeMon.getStabBonus() + "   "
+				+ runeMon.getSlashBonus() + "   "
+				+ runeMon.getCrushBonus() + "   "
+				+ runeMon.getMagicBonus() + "   "
+				+ runeMon.getRangedBonus() + "   "
+				+ runeMon.getStrengthBonus() + "   "
+				+ runeMon.getRangedStrengthBonus() + "   "
+				+ runeMon.getMagicStrengthBonus() + "   "
+		);
+		slotContainer.add(aggressiveStatsLabel);
+		itemContainer.add(slotContainer);
+
+		slotContainer = new JPanel();
+		slotContainer.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		final JLabel defenseStatsLabel = new JLabel();
+		defenseStatsLabel.setToolTipText(runeMon.getName());
+		defenseStatsLabel.setVerticalAlignment(SwingConstants.CENTER);
+		defenseStatsLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		defenseStatsLabel.setText(
+			runeMon.getStabDefence() + "   "
+				+ runeMon.getSlashDefence() + "   "
+				+ runeMon.getCrushDefence() + "   "
+				+ runeMon.getMagicDefence() + "   "
+				+ runeMon.getRangedDefence() + "   "
+		);
+		slotContainer.add(defenseStatsLabel);
+		itemContainer.add(slotContainer);
+
+		//AsyncBufferedImage itemImage = itemManager.getImage(item.getId(), item.getQuantity(), item.getQuantity() > 1);
+		//itemImage.addTo(imageLabel);
+
+		itemContainer.repaint();
 	}
 }
