@@ -24,13 +24,16 @@
  */
 package net.runelite.client.plugins.runedex;
 
+import com.google.common.hash.Hashing;
 import java.awt.image.BufferedImage;
+import java.nio.charset.StandardCharsets;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import static net.runelite.api.Constants.CLIENT_TICK_LENGTH;
 import net.runelite.api.GameState;
@@ -42,6 +45,10 @@ import net.runelite.api.events.WidgetLoaded;
 import static net.runelite.api.widgets.WidgetID.MONSTER_EXAMINE_GROUP_ID;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
+import net.runelite.client.chat.ChatColorType;
+import net.runelite.client.chat.ChatMessageBuilder;
+import net.runelite.client.chat.ChatMessageManager;
+import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -53,10 +60,10 @@ import net.runelite.client.util.ImageUtil;
 
 @Slf4j
 @PluginDescriptor(
-	name = "RuneDex",
+	name = "Runedex",
 	description = "Gotta catch 'em all!"
 )
-public class RuneDexPlugin extends Plugin
+public class RunedexPlugin extends Plugin
 {
 	@Inject
 	private ClientToolbar clientToolbar;
@@ -67,21 +74,24 @@ public class RuneDexPlugin extends Plugin
 	@Inject
 	private ClientThread clientThread;
 
-	private RuneDexPanel panel;
+	@Inject
+	private ChatMessageManager chatMessageManager;
+
+	private RunedexPanel panel;
 	private NavigationButton navButton;
 
-	private RuneDexClient runeDexClient = new RuneDexClient();
+	private RunedexClient runedexClient = new RunedexClient();
 
 	private NPC lastNpc;
 
-	Set<RuneMon> runeDex = new HashSet<>();
+	private Set<Runemon> runedex = new HashSet<>();
 
 	private String authenticationHash;
 
 	@Override
 	protected void startUp() throws Exception
 	{
-		panel = new RuneDexPanel(this);
+		panel = new RunedexPanel();
 
 		final BufferedImage icon = ImageUtil.getResourceStreamFromClass(getClass(), "icon.png");
 
@@ -103,19 +113,20 @@ public class RuneDexPlugin extends Plugin
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged gameStateChanged)
 	{
+		String hash = Hashing.sha512().hashString(client.getUsername(), StandardCharsets.UTF_8).toString();
 		if (gameStateChanged.getGameState() == GameState.LOGGED_IN
-			&& (authenticationHash == null || !authenticationHash.equals(client.getUsername())))
+			&& (authenticationHash == null || !authenticationHash.equals(hash)))
 		{
-			// TODO: Hash this or use real auth
-			authenticationHash = client.getUsername();
-			runeDex = runeDexClient.fetch(authenticationHash);
-			SwingUtilities.invokeLater(() ->
-			{
-				for (RuneMon r : runeDex)
-				{
-					panel.add(r);
-				}
-			});
+			authenticationHash = hash;
+			runedex = runedexClient.fetch(authenticationHash);;
+			SwingUtilities.invokeLater(() -> panel.rebuildFromSet(runedex));
+			sendChatMessage("Your Runedex contains information about " + runedex.size() + " Runemon. ");
+		}
+		else if (gameStateChanged.getGameState() == GameState.LOGIN_SCREEN)
+		{
+			authenticationHash = null;
+			runedex.clear();
+			SwingUtilities.invokeLater(() -> panel.rebuildFromSet(runedex));
 		}
 	}
 
@@ -145,10 +156,11 @@ public class RuneDexPlugin extends Plugin
 					if (lastNpcName == null || !lastNpcName.equals(monsterExamineName))
 					{
 						log.warn("Last NPC name does not match Monster Examine name, bailing out!");
+						sendChatMessage("Failed to identify Runemon! Perhaps you should try again.");
 						return;
 					}
 
-					RuneMon runeMon = new RuneMon(
+					Runemon runemon = new Runemon(
 						lastNpcId,
 						monsterExamineName,
 						client.getWidget(WidgetInfo.MONSTER_EXAMINE_STATS).getText(),
@@ -157,29 +169,31 @@ public class RuneDexPlugin extends Plugin
 						client.getWidget(WidgetInfo.MONSTER_EXAMINE_OTHER_ATTRIBUTES).getText()
 						);
 
-					RuneMon oldRuneMon = getRuneMonById(lastNpcId);
-					if (oldRuneMon != null)
+					Runemon oldRunemon = getRunemonById(lastNpcId);
+					if (oldRunemon != null)
 					{
-						if (oldRuneMon.equals(runeMon))
+						if (oldRunemon.equals(runemon))
 						{
-							log.debug("RuneMon already in collection: {}", runeMon.getName());
+							log.debug("Runemon already in collection: {}", runemon.getName());
+							sendChatMessage("You've already seen that.");
 							return;
 						}
-						runeDex.remove(oldRuneMon);
+						runedex.remove(oldRunemon);
 					}
 
-					runeDex.add(runeMon);
-					log.debug("RuneMon added to collection: {}", runeMon.getName());
+					runedex.add(runemon);
+					log.debug("Runemon added to collection: {}", runemon.getName());
+					sendChatMessage("You've found a new Runemon: " + runemon.getName() + " (#" + runemon.getId() + ")");
 
 					SwingUtilities.invokeLater(() ->
 					{
-						panel.add(runeMon);
+						panel.add(runemon);
 					});
 				});
 			}
 			catch (InterruptedException err)
 			{
-				log.warn("RuneDex widget loading interrupted!");
+				log.warn("Runedex widget loading interrupted!");
 			}
 		}
 	}
@@ -189,16 +203,33 @@ public class RuneDexPlugin extends Plugin
 		unit = ChronoUnit.SECONDS,
 		asynchronous = true
 	)
-	public void submit() {
-		runeDexClient.submit(runeDex, authenticationHash);
+	public void submit()
+	{
+		runedexClient.submit(runedex, authenticationHash);
 	}
 
-	private RuneMon getRuneMonById(int id)
+	private void sendChatMessage(String text)
 	{
-		for (RuneMon i : runeDex)
+		final ChatMessageBuilder message = new ChatMessageBuilder()
+			.append(ChatColorType.NORMAL)
+			.append("Runedex: " + text);
+
+		chatMessageManager.queue(QueuedMessage.builder()
+			.type(ChatMessageType.CONSOLE)
+			.runeLiteFormattedMessage(message.build())
+			.build());
+	}
+
+	private Runemon getRunemonById(int id)
+	{
+		if (runedex != null)
 		{
-			if (i.getId() == id) {
-				return i;
+			for (Runemon i : runedex)
+			{
+				if (i.getId() == id)
+				{
+					return i;
+				}
 			}
 		}
 		return null;

@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
-public class RuneMon
+public class Runemon
 {
 	private static final Pattern MONSTER_EXAMINE_PATTERN = Pattern.compile("(?:<br>)?([\\w\\s]+): *(-?\\d+|\\w+)(?:<br>)?");
 	private static final Pattern OTHER_ATTRIBUTES_PATTERN = Pattern.compile("(?:<br>- )([\\d\\w \\.]+)");
@@ -135,7 +135,7 @@ public class RuneMon
 	@Getter
 	private int vampyreTier;
 
-	RuneMon(
+	Runemon(
 		int id,
 		String monsterExamineName,
 		String monsterExamineStats,
@@ -148,11 +148,13 @@ public class RuneMon
 		this.name = monsterExamineName;
 
 		Matcher matcher = MONSTER_EXAMINE_PATTERN.matcher(monsterExamineStats);
-		while (matcher.find()) {
+		while (matcher.find())
+		{
 			String key = matcher.group(1);
 			String value = matcher.group(2);
 
-			switch (key) {
+			switch (key)
+			{
 				case "Combat level":
 					this.combatLevel = Integer.parseInt(value);
 					break;
@@ -186,11 +188,13 @@ public class RuneMon
 		}
 
 		matcher = MONSTER_EXAMINE_PATTERN.matcher(monsterExamineAggressiveStats);
-		while (matcher.find()) {
+		while (matcher.find())
+		{
 			String key = matcher.group(1);
 			String value = matcher.group(2);
 
-			switch (key) {
+			switch (key)
+			{
 				case "Attack speed":
 					this.attackSpeed = Integer.parseInt(value);
 					break;
@@ -227,11 +231,13 @@ public class RuneMon
 		}
 
 		matcher = MONSTER_EXAMINE_PATTERN.matcher(monsterExamineDefensiveStats);
-		while (matcher.find()) {
+		while (matcher.find())
+		{
 			String key = matcher.group(1);
 			String value = matcher.group(2);
 
-			switch (key) {
+			switch (key)
+			{
 				case "Stab":
 					this.stabDefence = Integer.parseInt(value);
 					break;
@@ -253,10 +259,12 @@ public class RuneMon
 		}
 
 		matcher = OTHER_ATTRIBUTES_PATTERN.matcher(monsterExamineOtherAttributes);
-		while (matcher.find()) {
+		while (matcher.find())
+		{
 			String key = matcher.group(1);
 
-			switch (key) {
+			switch (key)
+			{
 				case "Is a slayer monster.":
 					this.isSlayerTask = true;
 					break;
@@ -299,7 +307,7 @@ public class RuneMon
 		}
 	}
 
-	boolean equals(RuneMon c)
+	boolean equals(Runemon c)
 	{
 		return c.getName().equals(this.getName()) &&
 			c.getId() == this.getId() &&

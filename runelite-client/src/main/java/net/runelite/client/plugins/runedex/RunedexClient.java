@@ -40,9 +40,9 @@ import okhttp3.Response;
 
 @Slf4j
 @Singleton
-public class RuneDexClient
+public class RunedexClient
 {
-	private static final String RUNEDEX_BASE = "http://127.0.0.1:5000/";
+	private static final String RUNEDEX_BASE = "http://unmoon.com:5000/";
 	private static final String RUNEDEX_AUTH_HEADER = "RUNEDEX-AUTH";
 	private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 	private static final Gson GSON = new Gson();
@@ -50,17 +50,14 @@ public class RuneDexClient
 		.pingInterval(30, TimeUnit.SECONDS)
 		.build();
 
-	private Set<RuneMon> previouslySubmitted;
+	private Set<Runemon> previouslySubmitted;
 
-	protected void submit(Set<RuneMon> runedex, String authentication_hash) {
-		if (runedex.isEmpty() || runedex.equals(previouslySubmitted)) {
-			return;
-		}
+	protected void submit(Set<Runemon> runedex, String authentication_hash)
+	{
+		if (runedex == null || runedex.isEmpty() || runedex.equals(previouslySubmitted)) return;
 
-		Set<RuneMon> diff = new HashSet<>(runedex);
-		if (previouslySubmitted != null) {
-			diff.removeAll(previouslySubmitted);
-		}
+		Set<Runemon> diff = new HashSet<>(runedex);
+		if (previouslySubmitted != null) diff.removeAll(previouslySubmitted);
 
 		Request request = new Request.Builder()
 			.header(RUNEDEX_AUTH_HEADER, authentication_hash)
@@ -72,12 +69,12 @@ public class RuneDexClient
 		{
 			if (response.isSuccessful())
 			{
-				log.info("Successfully submitted RuneDex changes");
+				log.info("Successfully submitted {} new Runemon", diff.size());
 				previouslySubmitted = new HashSet<>(runedex);
 			}
 			else
 			{
-				log.error("Error submitting RuneDex changes: {}", response.body().toString());
+				log.error("Error submitting Runedex changes: {}", response.toString());
 			}
 		}
 		catch (IOException e)
@@ -86,8 +83,8 @@ public class RuneDexClient
 		}
 	}
 
-	protected Set<RuneMon> fetch(String authentication_hash) {
-
+	protected Set<Runemon> fetch(String authentication_hash)
+	{
 		Request request = new Request.Builder()
 			.header(RUNEDEX_AUTH_HEADER, authentication_hash)
 			.url(RUNEDEX_BASE + "fetch")
@@ -97,13 +94,13 @@ public class RuneDexClient
 		{
 			if (response.isSuccessful())
 			{
-				log.info("Successfully fetched RuneDex");
-				previouslySubmitted = GSON.fromJson(response.body().string(), new TypeToken<HashSet<RuneMon>>(){}.getType());
+				previouslySubmitted = GSON.fromJson(response.body().string(), new TypeToken<HashSet<Runemon>>(){}.getType()); // CHECKSTYLE:OFF
+				log.info("Successfully fetched Runedex with {} Runemon", previouslySubmitted.size());
 				return new HashSet<>(previouslySubmitted);
 			}
 			else
 			{
-				log.error("Error fetching RuneDex: {}", response.body().toString());
+				log.error("Error fetching Runedex: {}", response.body().toString());
 			}
 		}
 		catch (IOException e)
